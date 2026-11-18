@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07131f" />
+    <title>Ship &amp; Lighthouse — Computer Graphics Project</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <div class="page-shell" id="top">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Ship and lighthouse project home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>CG PROJECT</span>
+        </a>
+        <div class="topbar-meta"><span class="live-dot"></span> THREE.JS <span class="meta-divider">/</span> COMPUTER GRAPHICS</div>
+        <a class="top-link" href="#about">ABOUT THIS PROJECT <span aria-hidden="true">↓</span></a>
+      </header>
+
+      <main>
+        <section class="intro">
+          <div class="eyebrow"><span class="eyebrow-line"></span> COMPUTER GRAPHICS PROJECT</div>
+          <div class="intro-row">
+            <div>
+              <h1>Ship <span>&amp;</span> Lighthouse</h1>
+              <p class="intro-copy">Move the ship, turn the lighthouse beam, and explore the scene from another angle.</p>
+            </div>
+            <div class="intro-aside"><span class="aside-index">THREE.JS</span><span>MODELLING · MOTION<br />LIGHTING</span></div>
+          </div>
+        </section>
+
+        <section class="workspace" aria-label="Interactive 3D project">
+          <div class="scene-card">
+            <div class="scene-topline">
+              <div><span class="scene-status-dot"></span> THE SCENE <span class="scene-separator">/</span> SHIP AND LIGHTHOUSE</div>
+              <button class="view-label" id="viewReset" type="button" title="Reset camera view">RESET CAMERA <span>↗</span></button>
+            </div>
+            <div class="scene-wrap" id="sceneWrap">
+              <div class="scene-loader" id="sceneLoader"><span class="loader-ring"></span><span>Loading the scene…</span></div>
+              <div class="scene-overlay">
+                <div class="coordinates"><span>ROCKY ISLAND</span><span>LIGHTHOUSE BEACON</span></div>
+                <div class="scene-caption"><span class="caption-line"></span><span>THE SHIP</span><small>HULL · CABIN · DECK</small></div>
+              </div>
+              <div class="scene-hint"><span class="hint-mouse">↔</span> DRAG TO LOOK AROUND <i></i> SCROLL TO ZOOM</div>
+              <div class="scene-footer"><span>ANIMATED OCEAN · ROTATING BEAM</span><span id="sceneClock">—</span></div>
+            </div>
+          </div>
+
+          <aside class="control-card" aria-label="Scene controls">
+            <div class="control-heading">
+              <div><span class="section-kicker">CONTROLS</span><h2>Try it out</h2></div>
+              <span class="status-pill" id="statusPill"><span></span><span id="statusText">Running</span></span>
+            </div>
+
+            <div class="transport-controls">
+              <button type="button" class="button button-primary" id="startBtn"><span class="play-icon">▶</span> Start</button>
+              <button type="button" class="button button-quiet" id="pauseBtn"><span class="pause-icon">Ⅱ</span> Pause</button>
+              <button type="button" class="button button-quiet" id="resumeBtn"><span class="resume-icon">▶</span> Resume</button>
+              <button type="button" class="reset-button" id="resetBtn" aria-label="Reset scene" title="Reset scene">↺</button>
+            </div>
+
+            <div class="control-section">
+              <div class="label-row"><label for="speedSlider">Animation speed</label><output id="speedValue">1.0×</output></div>
+              <input id="speedSlider" type="range" min="0.2" max="2.5" step="0.1" value="1" />
+              <div class="range-ends"><span>Slow</span><span>Fast</span></div>
+            </div>
+
+            <div class="control-section movement-section">
+              <div class="label-row"><span class="control-label">Move the ship</span><span class="key-hint">W A S D</span></div>
+              <div class="movement-pad" aria-label="Ship movement controls">
+                <button class="move-button move-up" id="moveForward" type="button" aria-label="Move ship forward">↑</button>
+                <button class="move-button move-left" id="moveLeft" type="button" aria-label="Move ship left">←</button>
+                <span class="pad-center">MOVE</span>
+                <button class="move-button move-right" id="moveRight" type="button" aria-label="Move ship right">→</button>
+                <button class="move-button move-down" id="moveBackward" type="button" aria-label="Move ship backward">↓</button>
+              </div>
+              <div class="label-row rotation-row"><span class="control-label">Turn the ship</span><div class="rotation-buttons"><button type="button" id="rotateLeft" aria-label="Rotate ship left">↶</button><button type="button" id="rotateRight" aria-label="Rotate ship right">↷</button></div></div>
+            </div>
+
+            <div class="control-section transform-section">
+              <div class="label-row"><label for="objectSelect">Resize an object</label><span class="transform-tag">SCALE</span></div>
+              <select id="objectSelect" aria-label="Select object to scale">
+                <option value="ship">Ship</option>
+                <option value="lighthouse">Lighthouse on the island</option>
+              </select>
+              <div class="label-row scale-label"><span>Size</span><output id="scaleValue">1.00×</output></div>
+              <input id="scaleSlider" type="range" min="0.65" max="1.5" step="0.05" value="1" />
+            </div>
+
+            <div class="control-section camera-section">
+              <div class="label-row"><span class="control-label">Camera and lights</span><span class="control-label subdued">VIEW</span></div>
+              <div class="camera-controls">
+                <button class="small-control" type="button" id="cameraLeft">↶ <span>ORBIT</span></button>
+                <button class="small-control" type="button" id="cameraRight">↷ <span>ORBIT</span></button>
+                <button class="small-control zoom-control" type="button" id="zoomIn">＋ <span>ZOOM</span></button>
+                <button class="small-control zoom-control" type="button" id="zoomOut">− <span>ZOOM</span></button>
+              </div>
+              <label class="lighting-toggle" for="lightingToggle"><span><span class="toggle-title">Scene lighting</span><small>Ambient · sun · lantern</small></span><input id="lightingToggle" type="checkbox" checked /><span class="toggle-track"></span></label>
+            </div>
+
+            <div class="transform-readout">
+              <span class="readout-icon">↗</span>
+              <div><span class="section-kicker">WHAT'S CHANGING</span><p id="transformText">Translation · ship moving</p></div>
+              <span class="readout-coordinate" id="positionReadout">X 0.0</span>
+            </div>
+          </aside>
+        </section>
+
+        <section class="lower-grid" id="about">
+          <article class="notes-card">
+            <div class="lower-heading"><span class="section-kicker">WHAT THIS PROJECT DEMONSTRATES</span><span class="lower-number">3D GRAPHICS</span></div>
+            <h2>How the scene<br /><span>works.</span></h2>
+            <p class="notes-intro">The ship, island, and lighthouse are assembled from Three.js shapes. Use the controls above to see how position, rotation, scale, and the camera change the scene.</p>
+            <div class="concept-list">
+              <div class="concept"><span class="concept-no">01</span><div><h3>Translation</h3><p>Move the ship forward, backward, or sideways across the water.</p></div><span class="concept-symbol">↗</span></div>
+              <div class="concept"><span class="concept-no">02</span><div><h3>Rotation</h3><p>Turn the ship, while the lighthouse spotlight keeps sweeping around.</p></div><span class="concept-symbol">⟳</span></div>
+              <div class="concept"><span class="concept-no">03</span><div><h3>Scaling</h3><p>Select the ship or lighthouse and change its size with the slider.</p></div><span class="concept-symbol">⤢</span></div>
+              <div class="concept"><span class="concept-no">04</span><div><h3>Camera</h3><p>Drag the scene to orbit; scroll or use the buttons to zoom.</p></div><span class="concept-symbol">◎</span></div>
+            </div>
+          </article>
+          <div class="right-notes">
+            <article class="lighting-card">
+              <div class="lower-heading"><span class="section-kicker">LIGHTING</span><span class="lower-number">FOUR SOURCES</span></div>
+              <h2>Where the light<br /><span>comes from.</span></h2>
+              <div class="light-list">
+                <div><span class="light-swatch ambient"></span><span><b>Ambient</b><small>Soft light across the whole scene</small></span><span class="light-type">HEMISPHERE</span></div>
+                <div><span class="light-swatch sun"></span><span><b>Directional</b><small>Sunlight and cast shadows</small></span><span class="light-type">SUN</span></div>
+                <div><span class="light-swatch point"></span><span><b>Point</b><small>Glow inside the lighthouse</small></span><span class="light-type">LANTERN</span></div>
+                <div><span class="light-swatch spot"></span><span><b>Spot</b><small>A beam that rotates with the beacon</small></span><span class="light-type">BEACON</span></div>
+              </div>
+            </article>
+            <article class="project-card">
+              <div><span class="section-kicker">ABOUT THE PROJECT</span><h3>A graphics practical<br />made with Three.js.</h3></div>
+              <div class="project-meta"><span>MODELS</span><b>Built from geometry</b><span>ANIMATION</span><b>Runs in the browser</b></div>
+            </article>
+          </div>
+        </section>
+      </main>
+      <footer class="footer"><span>Ship &amp; Lighthouse · Computer Graphics</span><a href="#top">Back to top ↑</a></footer>
+    </div>
+  </body>
+</html>
